@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+        
+        <!-- Spring container will call constructor to create object for each bean -->
+        
+        <!-- singleton bean -->
+        <!-- will be created once the container is loaded  -->
+        <!-- lazy0init will load the object when getBean(), no proxy in between -->
+        <bean id = "ud" class = "com.mercury.daos.UserDao" lazy-init = "false"></bean>
+        
+        <!-- Spring singleton bean : in 1 spring bean container, 1 bean can create only 1 object  -->
+        <!-- Spring bean is singleton, but the class used in this bean is unnecessarily a java singleton -->
+        <bean id = "rd" class = "com.mercury.daos.RoomDao"></bean>
+        <bean id = "rd2" class = "com.mercury.daos.RoomDao" scope = "prototype"></bean>
+        
+        <bean id = "cd" class = "com.mercury.daos.CarDao">
+        		<constructor-arg index = "0" value = "Wu Ling"></constructor-arg>
+        		<constructor-arg index = "1" value = "10"></constructor-arg>
+        </bean>
+        <!--setter init  -->
+        <!-- use default constructor to create object , then use setter to set values -->
+        <bean id = "cd2" class = "com.mercury.daos.CarDao">
+			<property name = "brand" value = "DF"></property>
+       		<property name = "size" value = "99"></property>
+			
+			<constructor-arg index = "0" value = "Wu Ling"></constructor-arg>
+        	<constructor-arg index = "1" value = "10"></constructor-arg>
+			
+        		
+        </bean>
+        
+        
+        <!-- by default all beans are singleton -->
+        <!--  singleton, prototype, request, session, (global session<after spring 5 doesn't have this>) -->
+        <bean id = "ms" class = "com.mercury.services.MarketingService" scope = "prototype">
+       	 	<constructor-arg index = "0" ref = "ud"></constructor-arg>
+       	 	<constructor-arg index = "1" ref = "rd"></constructor-arg>
+        </bean>
+        <!-- byName, byType, constructor, default , no  -->
+        <!-- if not specified, autowire = no -->
+        <!-- default = byType + byName -->
+        <!-- except constructor, all other types are setter injection -->
+        <bean id = "ms2" class = "com.mercury.services.MarketingService" scope = "singleton" autowire = "default">
+       	 	<property name = "ud" ref = "ud"></property>
+       	 	<property name = "rd" ref = "rd2"></property>
+        </bean>
+        	
+        <bean id = "ts" class = "com.mercury.services.TrainingService" scope = "prototype" lazy-init = "true" >
+        
+        		<!-- constructor's 1st and 2nd paremeter -->
+        		<constructor-arg index = "0" value ="5" type = "int"></constructor-arg>
+        		<constructor-arg index = "1" value ="1" type = "int"></constructor-arg>
+        </bean>
+        
+        
+        
+</beans>
